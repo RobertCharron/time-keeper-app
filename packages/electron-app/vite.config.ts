@@ -6,9 +6,20 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     react(),
-    electron({
-      entry: 'src/main.ts',
-    }),
+    electron([
+      {
+        // Main process
+        entry: 'src/main.ts',
+        vite: {
+          build: {
+            outDir: 'dist',
+            rollupOptions: {
+              external: ['electron']
+            }
+          }
+        }
+      }
+    ])
   ],
   resolve: {
     alias: {
