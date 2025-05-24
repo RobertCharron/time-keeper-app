@@ -12,9 +12,23 @@ export default defineConfig({
         entry: 'src/main.ts',
         vite: {
           build: {
-            outDir: 'dist',
+            outDir: 'dist/main',
             rollupOptions: {
               external: ['electron']
+            }
+          }
+        }
+      },
+      {
+        // Renderer process
+        entry: 'src/index.tsx',
+        vite: {
+          build: {
+            outDir: 'dist/renderer',
+            rollupOptions: {
+              input: {
+                index: 'index.html',
+              }
             }
           }
         }
