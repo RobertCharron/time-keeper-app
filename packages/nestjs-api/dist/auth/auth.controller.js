@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
+const login_dto_1 = require("./dto/login.dto");
+const register_dto_1 = require("./dto/register.dto");
+const swagger_1 = require("@nestjs/swagger");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -32,17 +35,42 @@ let AuthController = class AuthController {
 };
 exports.AuthController = AuthController;
 __decorate([
+    (0, swagger_1.ApiBody)({
+        type: login_dto_1.LoginDto,
+        description: 'Login a user',
+        examples: {
+            'Login': {
+                value: {
+                    email: 'test@test.com',
+                    password: 'password',
+                }
+            }
+        }
+    }),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
+    (0, swagger_1.ApiBody)({
+        type: register_dto_1.RegisterDto,
+        description: 'Register a new user',
+        examples: {
+            'Register': {
+                value: {
+                    email: 'test@test.com',
+                    password: 'password',
+                    name: 'John Doe'
+                }
+            }
+        }
+    }),
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 exports.AuthController = AuthController = __decorate([

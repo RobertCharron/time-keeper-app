@@ -17,7 +17,7 @@ const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
     setError(null);
     try {
       const res = await fetch('http://localhost:3000/auth/register', {
-        method: 'OPTIONS',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -39,7 +39,6 @@ const RegisterForm: FC<RegisterFormProps> = ({ onRegister }) => {
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: '#fff' }}>
-      <input type="hidden" name="_method" value="OPTIONS" />
       <div style={{ marginBottom: '15px' }}>
         <label htmlFor="name" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Name:</label>
         <input
