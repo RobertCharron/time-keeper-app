@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { User } from '../entities/user.entity';
+import { User } from '../users/entities/user.entity';
 export declare class AuthService {
     private usersService;
     private jwtService;
@@ -12,7 +12,7 @@ export declare class AuthService {
             id: number;
             email: string;
             name: string;
-            role: import("../entities/user.entity").UserRole;
+            role: import("../users/entities/user.entity").UserRole;
         };
     }>;
     register(registerDto: {
@@ -25,7 +25,7 @@ export declare class AuthService {
             id: number;
             email: string;
             name: string;
-            role: import("../entities/user.entity").UserRole;
+            role: import("../users/entities/user.entity").UserRole;
         };
     }>;
 }

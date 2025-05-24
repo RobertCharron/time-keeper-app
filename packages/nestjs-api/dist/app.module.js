@@ -14,12 +14,22 @@ const app_service_1 = require("./app.service");
 const typeorm_config_1 = require("./config/typeorm.config");
 const users_module_1 = require("./users/users.module");
 const auth_module_1 = require("./auth/auth.module");
+const activities_module_1 = require("./activities/activities.module");
+const stations_module_1 = require("./stations/stations.module");
+const activity_uses_module_1 = require("./activity-uses/activity-uses.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig), users_module_1.UsersModule, auth_module_1.AuthModule],
+        imports: [
+            typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+            activities_module_1.ActivitiesModule,
+            stations_module_1.StationsModule,
+            activity_uses_module_1.ActivityUsesModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

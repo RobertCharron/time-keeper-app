@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ActivityUse } from 'src/activity-uses/entities/activity-use.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -44,6 +46,9 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => ActivityUse, activityUse => activityUse.user)
+  activityUses: ActivityUse[];
 
   @BeforeInsert()
   @BeforeUpdate()

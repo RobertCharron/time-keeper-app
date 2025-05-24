@@ -1,5 +1,5 @@
 import { UsersService } from './users.service';
-import { User, UserRole } from '../entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);

@@ -10,7 +10,7 @@ export declare class AuthController {
             id: number;
             email: string;
             name: string;
-            role: import("../entities/user.entity").UserRole;
+            role: import("../users/entities/user.entity").UserRole;
         };
     }>;
     register(registerDto: RegisterDto): Promise<{
@@ -19,7 +19,7 @@ export declare class AuthController {
             id: number;
             email: string;
             name: string;
-            role: import("../entities/user.entity").UserRole;
+            role: import("../users/entities/user.entity").UserRole;
         };
     }>;
 }
