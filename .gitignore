@@ -1,0 +1,16 @@
+node_modules
+packages/nestjs/node_modules
+packages/nestjs/.env
+packages/nestjs/.env.local
+packages/nestjs/.env.development.local
+packages/nestjs/.env.test.local
+packages/nestjs/.env.production.local
+
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+
