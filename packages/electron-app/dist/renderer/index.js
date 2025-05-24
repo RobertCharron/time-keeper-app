@@ -31348,21 +31348,334 @@ if (process.env.NODE_ENV === "production") {
     }
   };
 }
-const App = () => {
-  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "App", children: [
-    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h1", { children: "Time Keeper App" }, void 0, false, {
-      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-      lineNumber: 6,
+const LoginForm = ({ onLogin }) => {
+  const [email, setEmail] = reactExports.useState("");
+  const [password, setPassword] = reactExports.useState("");
+  const [error, setError] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("http://localhost:3000/auth/login", {
+        method: "OPTIONS",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) {
+        throw new Error("Login failed");
+      }
+      const data = await res.json();
+      if (data.access_token) {
+        onLogin(data.access_token);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("form", { onSubmit: handleSubmit, style: { maxWidth: "400px", margin: "0 auto", padding: "20px", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", backgroundColor: "#fff" }, children: [
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("input", { type: "hidden", name: "_method", value: "OPTIONS" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+      lineNumber: 41,
       columnNumber: 7
     }, void 0),
-    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("p", { children: "Welcome to your time tracking application!" }, void 0, false, {
-      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-      lineNumber: 7,
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { marginBottom: "15px" }, children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { htmlFor: "email", style: { display: "block", marginBottom: "5px", fontWeight: "bold" }, children: "Email:" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+        lineNumber: 43,
+        columnNumber: 9
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+        "input",
+        {
+          id: "email",
+          type: "email",
+          value: email,
+          onChange: (e) => setEmail(e.target.value),
+          required: true,
+          style: { width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+          lineNumber: 44,
+          columnNumber: 9
+        },
+        void 0
+      )
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+      lineNumber: 42,
       columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { marginBottom: "15px" }, children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { htmlFor: "password", style: { display: "block", marginBottom: "5px", fontWeight: "bold" }, children: "Password:" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+        lineNumber: 54,
+        columnNumber: 9
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+        "input",
+        {
+          id: "password",
+          type: "password",
+          value: password,
+          onChange: (e) => setPassword(e.target.value),
+          required: true,
+          style: { width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+          lineNumber: 55,
+          columnNumber: 9
+        },
+        void 0
+      )
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+      lineNumber: 53,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("button", { type: "submit", disabled: loading, style: { width: "100%", padding: "10px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }, children: loading ? "Logging in..." : "Login" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+      lineNumber: 64,
+      columnNumber: 7
+    }, void 0),
+    error && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("p", { style: { color: "red", marginTop: "10px" }, children: error }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+      lineNumber: 67,
+      columnNumber: 17
+    }, void 0)
+  ] }, void 0, true, {
+    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/LoginForm.tsx",
+    lineNumber: 40,
+    columnNumber: 5
+  }, void 0);
+};
+const RegisterForm = ({ onRegister }) => {
+  const [email, setEmail] = reactExports.useState("");
+  const [password, setPassword] = reactExports.useState("");
+  const [name, setName] = reactExports.useState("");
+  const [error, setError] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("http://localhost:3000/auth/register", {
+        method: "OPTIONS",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password, name })
+      });
+      if (!res.ok) {
+        throw new Error("Registration failed");
+      }
+      const data = await res.json();
+      if (data.access_token) {
+        onRegister(data.access_token);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("form", { onSubmit: handleSubmit, style: { maxWidth: "400px", margin: "0 auto", padding: "20px", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", backgroundColor: "#fff" }, children: [
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("input", { type: "hidden", name: "_method", value: "OPTIONS" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+      lineNumber: 42,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { marginBottom: "15px" }, children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { htmlFor: "name", style: { display: "block", marginBottom: "5px", fontWeight: "bold" }, children: "Name:" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+        lineNumber: 44,
+        columnNumber: 9
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+        "input",
+        {
+          id: "name",
+          type: "text",
+          value: name,
+          onChange: (e) => setName(e.target.value),
+          required: true,
+          style: { width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+          lineNumber: 45,
+          columnNumber: 9
+        },
+        void 0
+      )
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+      lineNumber: 43,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { marginBottom: "15px" }, children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { htmlFor: "email", style: { display: "block", marginBottom: "5px", fontWeight: "bold" }, children: "Email:" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+        lineNumber: 55,
+        columnNumber: 9
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+        "input",
+        {
+          id: "email",
+          type: "email",
+          value: email,
+          onChange: (e) => setEmail(e.target.value),
+          required: true,
+          style: { width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+          lineNumber: 56,
+          columnNumber: 9
+        },
+        void 0
+      )
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+      lineNumber: 54,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { marginBottom: "15px" }, children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { htmlFor: "password", style: { display: "block", marginBottom: "5px", fontWeight: "bold" }, children: "Password:" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+        lineNumber: 66,
+        columnNumber: 9
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+        "input",
+        {
+          id: "password",
+          type: "password",
+          value: password,
+          onChange: (e) => setPassword(e.target.value),
+          required: true,
+          style: { width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+          lineNumber: 67,
+          columnNumber: 9
+        },
+        void 0
+      )
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+      lineNumber: 65,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("button", { type: "submit", disabled: loading, style: { width: "100%", padding: "10px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }, children: loading ? "Registering..." : "Register" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+      lineNumber: 76,
+      columnNumber: 7
+    }, void 0),
+    error && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("p", { style: { color: "red", marginTop: "10px" }, children: error }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+      lineNumber: 79,
+      columnNumber: 17
+    }, void 0)
+  ] }, void 0, true, {
+    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/RegisterForm.tsx",
+    lineNumber: 41,
+    columnNumber: 5
+  }, void 0);
+};
+const App = () => {
+  const [token, setToken] = reactExports.useState(null);
+  const [isLogin, setIsLogin] = reactExports.useState(true);
+  reactExports.useEffect(() => {
+    const storedToken = localStorage.getItem("access_token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
+  const handleLogin = (token2) => {
+    localStorage.setItem("access_token", token2);
+    setToken(token2);
+  };
+  const handleRegister = (token2) => {
+    localStorage.setItem("access_token", token2);
+    setToken(token2);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    setToken(null);
+  };
+  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "App", style: { fontFamily: "Arial, sans-serif", maxWidth: "800px", margin: "0 auto", padding: "20px", backgroundColor: "#f9f9f9", minHeight: "100vh" }, children: [
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h1", { style: { textAlign: "center", color: "#333" }, children: "Time Keeper App" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 33,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("p", { style: { textAlign: "center", color: "#666" }, children: "Welcome to your time tracking application!" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 34,
+      columnNumber: 7
+    }, void 0),
+    token ? /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { textAlign: "center", marginTop: "20px" }, children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h2", { style: { color: "#333" }, children: "Logged In" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+        lineNumber: 37,
+        columnNumber: 11
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("button", { onClick: handleLogout, style: { padding: "10px 20px", backgroundColor: "#dc3545", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }, children: "Logout" }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+        lineNumber: 38,
+        columnNumber: 11
+      }, void 0)
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 36,
+      columnNumber: 9
+    }, void 0) : /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(jsxDevRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("button", { onClick: () => setIsLogin(!isLogin), style: { display: "block", margin: "20px auto", padding: "10px 20px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }, children: [
+        "Switch to ",
+        isLogin ? "Registration" : "Login"
+      ] }, void 0, true, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+        lineNumber: 42,
+        columnNumber: 11
+      }, void 0),
+      isLogin ? /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(LoginForm, { onLogin: handleLogin }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+        lineNumber: 46,
+        columnNumber: 13
+      }, void 0) : /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(RegisterForm, { onRegister: handleRegister }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+        lineNumber: 48,
+        columnNumber: 13
+      }, void 0)
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 41,
+      columnNumber: 9
     }, void 0)
   ] }, void 0, true, {
     fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-    lineNumber: 5,
+    lineNumber: 32,
     columnNumber: 5
   }, void 0);
 };
