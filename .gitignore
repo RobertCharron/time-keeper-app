@@ -6,13 +6,13 @@ packages/nestjs/.env.development.local
 packages/nestjs/.env.test.local
 packages/nestjs/.env.production.local
 
+package-lock.json
 
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-
 
 packages/nestjs-api/dist
 packages/electron-app/dist

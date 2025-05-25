@@ -1,3 +1,7 @@
+# Project Rules
+- This project uses pnpm, please do not use other package managers
+
+
 # React Rules
 
 - Use functional components with hooks instead of class components
