@@ -29,6 +29,16 @@ __decorate([
 ], CreateActivityUseDto.prototype, "timeEnd", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateActivityUseDto.prototype, "timePaused", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateActivityUseDto.prototype, "totalDuration", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateActivityUseDto.prototype, "activityId", void 0);

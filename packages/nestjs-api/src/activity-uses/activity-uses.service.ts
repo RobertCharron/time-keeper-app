@@ -15,6 +15,8 @@ export class ActivityUsesService {
     const activityUse = this.activityUsesRepository.create({
       ...createActivityUseDto,
       userId,
+      timePaused: createActivityUseDto.timePaused || 0,
+      totalDuration: createActivityUseDto.totalDuration || 0,
     });
     return this.activityUsesRepository.save(activityUse);
   }
@@ -50,9 +52,11 @@ export class ActivityUsesService {
     });
   }
 
-  async endActivity(id: number): Promise<ActivityUse> {
+  async endActivity(id: number, timePaused: number, totalDuration: number): Promise<ActivityUse> {
     const activityUse = await this.findOne(id);
     activityUse.timeEnd = new Date();
+    activityUse.timePaused = timePaused;
+    activityUse.totalDuration = totalDuration;
     return this.activityUsesRepository.save(activityUse);
   }
 }

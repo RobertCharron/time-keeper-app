@@ -13,6 +13,8 @@ describe('ActivityUsesService', () => {
     id: 1,
     timeStart: new Date(),
     timeEnd: null,
+    timePaused: 0,
+    totalDuration: 0,
     isActive: true,
     userId: 1,
     activityId: 1,
@@ -47,10 +49,31 @@ describe('ActivityUsesService', () => {
   });
 
   describe('create', () => {
-    it('should create a new activity use', async () => {
+    it('should create a new activity use with default values for timePaused and totalDuration', async () => {
       const createDto = {
         timeStart: new Date(),
         activityId: 1,
+      };
+      const userId = 1;
+
+      const result = await service.create(createDto, userId);
+
+      expect(repository.create).toHaveBeenCalledWith({
+        ...createDto,
+        userId,
+        timePaused: 0,
+        totalDuration: 0,
+      });
+      expect(repository.save).toHaveBeenCalled();
+      expect(result).toHaveProperty('id');
+    });
+
+    it('should create a new activity use with provided timePaused and totalDuration values', async () => {
+      const createDto = {
+        timeStart: new Date(),
+        activityId: 1,
+        timePaused: 5000,
+        totalDuration: 10000,
       };
       const userId = 1;
 
@@ -119,21 +142,27 @@ describe('ActivityUsesService', () => {
   });
 
   describe('endActivity', () => {
-    it('should set timeEnd for an activity use', async () => {
-      const result = await service.endActivity(1);
+    it('should set timeEnd, timePaused, and totalDuration for an activity use', async () => {
+      const timePaused = 5000;
+      const totalDuration = 10000;
+      const result = await service.endActivity(1, timePaused, totalDuration);
 
       expect(repository.findOne).toHaveBeenCalled();
       expect(repository.save).toHaveBeenCalledWith({
         ...mockActivityUse,
         timeEnd: expect.any(Date),
+        timePaused,
+        totalDuration,
       });
       expect(result.timeEnd).toBeDefined();
+      expect(result.timePaused).toBe(timePaused);
+      expect(result.totalDuration).toBe(totalDuration);
     });
 
     it('should throw NotFoundException if activity use not found', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(null);
 
-      await expect(service.endActivity(999)).rejects.toThrow(NotFoundException);
+      await expect(service.endActivity(999, 0, 0)).rejects.toThrow(NotFoundException);
     });
   });
 });

@@ -1,4 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
+import './ActivityTimer.css';
 
 interface Station {
   id: number;
@@ -15,17 +16,26 @@ interface ActivityTimerProps {
   token: string;
 }
 
+interface Toast {
+  id: number;
+  message: string;
+  type: 'success' | 'error';
+}
+
 const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
   const [stations, setStations] = useState<Station[]>([]);
   const [selectedStation, setSelectedStation] = useState<number | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
-  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [pauseTime, setPauseTime] = useState<Date | null>(null);
+  const [totalPausedTime, setTotalPausedTime] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
     fetchStations();
@@ -41,13 +51,35 @@ const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isRunning && startTime) {
+    if (isRunning && !isPaused && startTime) {
       interval = setInterval(() => {
-        setElapsedTime(Math.floor((new Date().getTime() - startTime.getTime()) / 1000));
+        const now = new Date();
+        const pausedTime = totalPausedTime;
+        setElapsedTime(Math.floor((now.getTime() - startTime.getTime() - pausedTime) / 1000));
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isRunning, startTime]);
+  }, [isRunning, isPaused, startTime, totalPausedTime]);
+
+  const addToast = (message: string, type: 'success' | 'error') => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 3000);
+  };
+
+  const resetTimer = () => {
+    setStartTime(null);
+    setPauseTime(null);
+    setTotalPausedTime(0);
+    setSelectedActivity(null);
+    setSelectedStation(null);
+    setError(null);
+    setElapsedTime(0);
+    setIsRunning(false);
+    setIsPaused(false);
+  };
 
   const fetchStations = async () => {
     try {
@@ -81,22 +113,38 @@ const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
     }
   };
 
-  const handleStartStop = () => {
+  const handleStart = () => {
     if (!isRunning) {
       setStartTime(new Date());
       setIsRunning(true);
+      setIsPaused(false);
       setElapsedTime(0);
-    } else {
-      setEndTime(new Date());
-      setIsRunning(false);
+      setTotalPausedTime(0);
+    }
+  };
+
+  const handlePause = () => {
+    if (isRunning && !isPaused) {
+      setIsPaused(true);
+      setPauseTime(new Date());
+    } else if (isRunning && isPaused && pauseTime) {
+      setIsPaused(false);
+      const now = new Date();
+      const newPausedTime = now.getTime() - pauseTime.getTime();
+      setTotalPausedTime((prev) => prev + newPausedTime);
+      setPauseTime(null);
     }
   };
 
   const handleFinish = async () => {
-    if (!startTime || !endTime || !selectedActivity) return;
+    if (!startTime || !selectedActivity) return;
 
+    const endTime = new Date();
     setLoading(true);
     try {
+      // Calculate total duration in milliseconds
+      const totalDuration = endTime.getTime() - startTime.getTime();
+
       const response = await fetch('http://localhost:3000/activity-uses', {
         method: 'POST',
         headers: {
@@ -107,21 +155,19 @@ const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
           timeStart: startTime,
           timeEnd: endTime,
           activityId: selectedActivity,
+          timePaused: totalPausedTime,
+          totalDuration: totalDuration,
         }),
       });
 
       if (!response.ok) throw new Error('Failed to save activity use');
 
-      // Reset the timer
-      setStartTime(null);
-      setEndTime(null);
-      setSelectedActivity(null);
-      setSelectedStation(null);
-      setError(null);
-      setElapsedTime(0);
+      addToast('Activity saved successfully!', 'success');
+      resetTimer();
     } catch (error) {
       console.error('Error saving activity use:', error);
       setError('Failed to save activity use');
+      addToast('Failed to save activity. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -135,60 +181,16 @@ const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        padding: '30px',
-        backgroundColor: '#ffffff',
-        borderRadius: '12px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      <h2
-        style={{
-          marginBottom: '30px',
-          textAlign: 'center',
-          color: '#2c3e50',
-          fontSize: '28px',
-          fontWeight: '600',
-        }}
-      >
-        Activity Timer
-      </h2>
+    <div className="timer-container">
+      <h2 className="timer-title">Activity Timer</h2>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '20px',
-          marginBottom: '30px',
-        }}
-      >
+      <div className="timer-grid">
         <div>
-          <label
-            style={{
-              display: 'block',
-              marginBottom: '8px',
-              fontWeight: '600',
-              color: '#2c3e50',
-            }}
-          >
-            Select Station:
-          </label>
+          <label className="timer-label">Select Station:</label>
           <select
             value={selectedStation || ''}
             onChange={(e) => setSelectedStation(Number(e.target.value))}
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '2px solid #e0e0e0',
-              backgroundColor: '#f8f9fa',
-              fontSize: '16px',
-              transition: 'border-color 0.2s',
-              cursor: 'pointer',
-            }}
+            className="timer-select"
           >
             <option value="">Select a station</option>
             {stations.map((station) => (
@@ -201,29 +203,11 @@ const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
 
         {selectedStation && (
           <div>
-            <label
-              style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: '600',
-                color: '#2c3e50',
-              }}
-            >
-              Select Activity:
-            </label>
+            <label className="timer-label">Select Activity:</label>
             <select
               value={selectedActivity || ''}
               onChange={(e) => setSelectedActivity(Number(e.target.value))}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '2px solid #e0e0e0',
-                backgroundColor: '#f8f9fa',
-                fontSize: '16px',
-                transition: 'border-color 0.2s',
-                cursor: 'pointer',
-              }}
+              className="timer-select"
             >
               <option value="">Select an activity</option>
               {activities.map((activity) => (
@@ -237,100 +221,48 @@ const ActivityTimer: FC<ActivityTimerProps> = ({ token }) => {
       </div>
 
       {selectedActivity && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '20px',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '48px',
-              fontWeight: 'bold',
-              color: '#2c3e50',
-              fontFamily: 'monospace',
-              padding: '20px',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '12px',
-              minWidth: '200px',
-              textAlign: 'center',
-            }}
-          >
-            {formatTime(elapsedTime)}
-          </div>
-
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <button
-              onClick={handleStartStop}
-              disabled={loading}
-              style={{
-                padding: '12px 30px',
-                backgroundColor: isRunning ? '#dc3545' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: '600',
-                transition: 'transform 0.2s, background-color 0.2s',
-              }}
-            >
-              {isRunning ? 'Stop' : 'Start'}
-            </button>
-
-            {endTime && (
+        <div className="timer-display">
+          <div className="timer-time">{formatTime(elapsedTime)}</div>
+          <div className="timer-buttons">
+            {!isRunning ? (
               <button
-                onClick={handleFinish}
+                onClick={handleStart}
+                className="timer-button start-button"
                 disabled={loading}
-                style={{
-                  padding: '12px 30px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  transition: 'transform 0.2s, background-color 0.2s',
-                }}
               >
-                {loading ? 'Saving...' : 'Finish'}
+                Start
               </button>
+            ) : (
+              <>
+                <button
+                  onClick={handlePause}
+                  className="timer-button pause-button"
+                  disabled={loading}
+                >
+                  {isPaused ? 'Resume' : 'Pause'}
+                </button>
+                <button
+                  onClick={handleFinish}
+                  className="timer-button finish-button"
+                  disabled={loading}
+                >
+                  {loading ? 'Saving...' : 'Finish'}
+                </button>
+              </>
             )}
           </div>
         </div>
       )}
 
-      {error && (
-        <div
-          style={{
-            marginTop: '20px',
-            padding: '12px',
-            backgroundColor: '#f8d7da',
-            color: '#721c24',
-            borderRadius: '8px',
-            textAlign: 'center',
-          }}
-        >
-          {error}
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
 
-      {startTime && (
-        <div
-          style={{
-            marginTop: '30px',
-            textAlign: 'center',
-            color: '#6c757d',
-            fontSize: '14px',
-          }}
-        >
-          <p>Started: {startTime.toLocaleTimeString()}</p>
-          {endTime && <p>Ended: {endTime.toLocaleTimeString()}</p>}
-        </div>
-      )}
+      <div className="toast-container">
+        {toasts.map((toast) => (
+          <div key={toast.id} className={`toast ${toast.type}`}>
+            {toast.message}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

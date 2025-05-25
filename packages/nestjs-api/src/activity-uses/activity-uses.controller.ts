@@ -34,7 +34,11 @@ export class ActivityUsesController {
   }
 
   @Post(':id/end')
-  endActivity(@Param('id') id: string) {
-    return this.activityUsesService.endActivity(+id);
+  endActivity(
+    @Param('id') id: string,
+    @Body('timePaused') timePaused: number,
+    @Body('totalDuration') totalDuration: number,
+  ) {
+    return this.activityUsesService.endActivity(+id, timePaused, totalDuration);
   }
 }

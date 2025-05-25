@@ -8,5 +8,5 @@ export declare class ActivityUsesController {
     findOne(id: string): Promise<import("./entities/activity-use.entity").ActivityUse>;
     findByUser(userId: string): Promise<import("./entities/activity-use.entity").ActivityUse[]>;
     findByActivity(activityId: string): Promise<import("./entities/activity-use.entity").ActivityUse[]>;
-    endActivity(id: string): Promise<import("./entities/activity-use.entity").ActivityUse>;
+    endActivity(id: string, timePaused: number, totalDuration: number): Promise<import("./entities/activity-use.entity").ActivityUse>;
 }

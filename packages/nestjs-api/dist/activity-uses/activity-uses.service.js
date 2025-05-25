@@ -25,6 +25,8 @@ let ActivityUsesService = class ActivityUsesService {
         const activityUse = this.activityUsesRepository.create({
             ...createActivityUseDto,
             userId,
+            timePaused: createActivityUseDto.timePaused || 0,
+            totalDuration: createActivityUseDto.totalDuration || 0,
         });
         return this.activityUsesRepository.save(activityUse);
     }
@@ -55,9 +57,11 @@ let ActivityUsesService = class ActivityUsesService {
             relations: ['user', 'activity'],
         });
     }
-    async endActivity(id) {
+    async endActivity(id, timePaused, totalDuration) {
         const activityUse = await this.findOne(id);
         activityUse.timeEnd = new Date();
+        activityUse.timePaused = timePaused;
+        activityUse.totalDuration = totalDuration;
         return this.activityUsesRepository.save(activityUse);
     }
 };

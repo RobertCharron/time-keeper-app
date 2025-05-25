@@ -4,6 +4,8 @@ export declare class ActivityUse {
     id: number;
     timeStart: Date;
     timeEnd: Date;
+    timePaused: number;
+    totalDuration: number;
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;

@@ -9,5 +9,5 @@ export declare class ActivityUsesService {
     findOne(id: number): Promise<ActivityUse>;
     findByUser(userId: number): Promise<ActivityUse[]>;
     findByActivity(activityId: number): Promise<ActivityUse[]>;
-    endActivity(id: number): Promise<ActivityUse>;
+    endActivity(id: number, timePaused: number, totalDuration: number): Promise<ActivityUse>;
 }

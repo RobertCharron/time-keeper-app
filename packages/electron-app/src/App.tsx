@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import ActivityTimer from './components/ActivityTimer';
+import './App.css';
 
-function App() {
+const App: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [token, setToken] = useState<string | null>(null);
 
@@ -26,34 +27,10 @@ function App() {
 
   if (token) {
     return (
-      <div
-        style={{
-          fontFamily: 'Arial, sans-serif',
-          maxWidth: '800px',
-          margin: '0 auto',
-          padding: '20px',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '20px',
-          }}
-        >
-          <h1 style={{ margin: 0 }}>Time Keeper</h1>
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+      <div className="app-container">
+        <div className="header">
+          <h1>Time Keeper</h1>
+          <button onClick={handleLogout} className="logout-button">
             Logout
           </button>
         </div>
@@ -63,33 +40,16 @@ function App() {
   }
 
   return (
-    <div
-      style={{
-        fontFamily: 'Arial, sans-serif',
-        maxWidth: '800px',
-        margin: '0 auto',
-        padding: '20px',
-      }}
-    >
-      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Time Keeper</h1>
+    <div className="app-container">
+      <h1 className="title">Time Keeper</h1>
       {isLogin ? <LoginForm onLogin={handleLogin} /> : <RegisterForm onLogin={handleLogin} />}
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button
-          onClick={() => setIsLogin(!isLogin)}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
+      <div className="switch-form-container">
+        <button onClick={() => setIsLogin(!isLogin)} className="switch-form-button">
           {isLogin ? 'Need to register?' : 'Already have an account?'}
         </button>
       </div>
     </div>
   );
-}
+};
 
 export default App;

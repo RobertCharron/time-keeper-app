@@ -13,6 +13,14 @@ export class CreateActivityUseDto {
   timeEnd?: Date;
 
   @IsNumber()
+  @IsOptional()
+  timePaused?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalDuration?: number;
+
+  @IsNumber()
   @IsNotEmpty()
   activityId: number;
 

@@ -31697,11 +31697,14 @@ const ActivityTimer = ({ token }) => {
   const [activities, setActivities] = reactExports.useState([]);
   const [selectedActivity, setSelectedActivity] = reactExports.useState(null);
   const [isRunning, setIsRunning] = reactExports.useState(false);
+  const [isPaused, setIsPaused] = reactExports.useState(false);
   const [startTime, setStartTime] = reactExports.useState(null);
-  const [endTime, setEndTime] = reactExports.useState(null);
+  const [pauseTime, setPauseTime] = reactExports.useState(null);
+  const [totalPausedTime, setTotalPausedTime] = reactExports.useState(0);
   const [error, setError] = reactExports.useState(null);
   const [loading, setLoading] = reactExports.useState(false);
   const [elapsedTime, setElapsedTime] = reactExports.useState(0);
+  const [toasts, setToasts] = reactExports.useState([]);
   reactExports.useEffect(() => {
     fetchStations();
   }, []);
@@ -31714,13 +31717,33 @@ const ActivityTimer = ({ token }) => {
   }, [selectedStation]);
   reactExports.useEffect(() => {
     let interval;
-    if (isRunning && startTime) {
+    if (isRunning && !isPaused && startTime) {
       interval = setInterval(() => {
-        setElapsedTime(Math.floor(((/* @__PURE__ */ new Date()).getTime() - startTime.getTime()) / 1e3));
+        const now = /* @__PURE__ */ new Date();
+        const pausedTime = totalPausedTime;
+        setElapsedTime(Math.floor((now.getTime() - startTime.getTime() - pausedTime) / 1e3));
       }, 1e3);
     }
     return () => clearInterval(interval);
-  }, [isRunning, startTime]);
+  }, [isRunning, isPaused, startTime, totalPausedTime]);
+  const addToast = (message, type) => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 3e3);
+  };
+  const resetTimer = () => {
+    setStartTime(null);
+    setPauseTime(null);
+    setTotalPausedTime(0);
+    setSelectedActivity(null);
+    setSelectedStation(null);
+    setError(null);
+    setElapsedTime(0);
+    setIsRunning(false);
+    setIsPaused(false);
+  };
   const fetchStations = async () => {
     try {
       const response = await fetch("http://localhost:3000/stations", {
@@ -31751,20 +31774,33 @@ const ActivityTimer = ({ token }) => {
       setError("Failed to load activities");
     }
   };
-  const handleStartStop = () => {
+  const handleStart = () => {
     if (!isRunning) {
       setStartTime(/* @__PURE__ */ new Date());
       setIsRunning(true);
+      setIsPaused(false);
       setElapsedTime(0);
-    } else {
-      setEndTime(/* @__PURE__ */ new Date());
-      setIsRunning(false);
+      setTotalPausedTime(0);
+    }
+  };
+  const handlePause = () => {
+    if (isRunning && !isPaused) {
+      setIsPaused(true);
+      setPauseTime(/* @__PURE__ */ new Date());
+    } else if (isRunning && isPaused && pauseTime) {
+      setIsPaused(false);
+      const now = /* @__PURE__ */ new Date();
+      const newPausedTime = now.getTime() - pauseTime.getTime();
+      setTotalPausedTime((prev) => prev + newPausedTime);
+      setPauseTime(null);
     }
   };
   const handleFinish = async () => {
-    if (!startTime || !endTime || !selectedActivity) return;
+    if (!startTime || !selectedActivity) return;
+    const endTime = /* @__PURE__ */ new Date();
     setLoading(true);
     try {
+      const totalDuration = endTime.getTime() - startTime.getTime();
       const response = await fetch("http://localhost:3000/activity-uses", {
         method: "POST",
         headers: {
@@ -31774,19 +31810,18 @@ const ActivityTimer = ({ token }) => {
         body: JSON.stringify({
           timeStart: startTime,
           timeEnd: endTime,
-          activityId: selectedActivity
+          activityId: selectedActivity,
+          timePaused: totalPausedTime,
+          totalDuration
         })
       });
       if (!response.ok) throw new Error("Failed to save activity use");
-      setStartTime(null);
-      setEndTime(null);
-      setSelectedActivity(null);
-      setSelectedStation(null);
-      setError(null);
-      setElapsedTime(0);
+      addToast("Activity saved successfully!", "success");
+      resetTimer();
     } catch (error2) {
       console.error("Error saving activity use:", error2);
       setError("Failed to save activity use");
+      addToast("Failed to save activity. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -31797,364 +31832,188 @@ const ActivityTimer = ({ token }) => {
     const secs = seconds % 60;
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-    "div",
-    {
-      style: {
-        maxWidth: "800px",
-        margin: "0 auto",
-        padding: "30px",
-        backgroundColor: "#ffffff",
-        borderRadius: "12px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
-      },
-      children: [
+  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "timer-container", children: [
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h2", { className: "timer-title", children: "Activity Timer" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+      lineNumber: 185,
+      columnNumber: 7
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "timer-grid", children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { children: [
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { className: "timer-label", children: "Select Station:" }, void 0, false, {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+          lineNumber: 189,
+          columnNumber: 11
+        }, void 0),
         /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-          "h2",
+          "select",
           {
-            style: {
-              marginBottom: "30px",
-              textAlign: "center",
-              color: "#2c3e50",
-              fontSize: "28px",
-              fontWeight: "600"
-            },
-            children: "Activity Timer"
-          },
-          void 0,
-          false,
-          {
-            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-            lineNumber: 148,
-            columnNumber: 7
-          },
-          void 0
-        ),
-        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-          "div",
-          {
-            style: {
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginBottom: "30px"
-            },
+            value: selectedStation || "",
+            onChange: (e) => setSelectedStation(Number(e.target.value)),
+            className: "timer-select",
             children: [
-              /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { children: [
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "label",
-                  {
-                    style: {
-                      display: "block",
-                      marginBottom: "8px",
-                      fontWeight: "600",
-                      color: "#2c3e50"
-                    },
-                    children: "Select Station:"
-                  },
-                  void 0,
-                  false,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                    lineNumber: 169,
-                    columnNumber: 11
-                  },
-                  void 0
-                ),
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "select",
-                  {
-                    value: selectedStation || "",
-                    onChange: (e) => setSelectedStation(Number(e.target.value)),
-                    style: {
-                      width: "100%",
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: "2px solid #e0e0e0",
-                      backgroundColor: "#f8f9fa",
-                      fontSize: "16px",
-                      transition: "border-color 0.2s",
-                      cursor: "pointer"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: "", children: "Select a station" }, void 0, false, {
-                        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                        lineNumber: 193,
-                        columnNumber: 13
-                      }, void 0),
-                      stations.map((station) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: station.id, children: station.name }, station.id, false, {
-                        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                        lineNumber: 195,
-                        columnNumber: 15
-                      }, void 0))
-                    ]
-                  },
-                  void 0,
-                  true,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                    lineNumber: 179,
-                    columnNumber: 11
-                  },
-                  void 0
-                )
-              ] }, void 0, true, {
+              /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: "", children: "Select a station" }, void 0, false, {
                 fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                lineNumber: 168,
-                columnNumber: 9
+                lineNumber: 195,
+                columnNumber: 13
               }, void 0),
-              selectedStation && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { children: [
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "label",
-                  {
-                    style: {
-                      display: "block",
-                      marginBottom: "8px",
-                      fontWeight: "600",
-                      color: "#2c3e50"
-                    },
-                    children: "Select Activity:"
-                  },
-                  void 0,
-                  false,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                    lineNumber: 204,
-                    columnNumber: 13
-                  },
-                  void 0
-                ),
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "select",
-                  {
-                    value: selectedActivity || "",
-                    onChange: (e) => setSelectedActivity(Number(e.target.value)),
-                    style: {
-                      width: "100%",
-                      padding: "12px",
-                      borderRadius: "8px",
-                      border: "2px solid #e0e0e0",
-                      backgroundColor: "#f8f9fa",
-                      fontSize: "16px",
-                      transition: "border-color 0.2s",
-                      cursor: "pointer"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: "", children: "Select an activity" }, void 0, false, {
-                        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                        lineNumber: 228,
-                        columnNumber: 15
-                      }, void 0),
-                      activities.map((activity) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: activity.id, children: activity.name }, activity.id, false, {
-                        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                        lineNumber: 230,
-                        columnNumber: 17
-                      }, void 0))
-                    ]
-                  },
-                  void 0,
-                  true,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                    lineNumber: 214,
-                    columnNumber: 13
-                  },
-                  void 0
-                )
-              ] }, void 0, true, {
+              stations.map((station) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: station.id, children: station.name }, station.id, false, {
                 fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                lineNumber: 203,
-                columnNumber: 11
-              }, void 0)
+                lineNumber: 197,
+                columnNumber: 15
+              }, void 0))
             ]
           },
           void 0,
           true,
           {
             fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-            lineNumber: 160,
-            columnNumber: 7
-          },
-          void 0
-        ),
-        selectedActivity && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-          "div",
-          {
-            style: {
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "20px"
-            },
-            children: [
-              /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                "div",
-                {
-                  style: {
-                    fontSize: "48px",
-                    fontWeight: "bold",
-                    color: "#2c3e50",
-                    fontFamily: "monospace",
-                    padding: "20px",
-                    backgroundColor: "#f8f9fa",
-                    borderRadius: "12px",
-                    minWidth: "200px",
-                    textAlign: "center"
-                  },
-                  children: formatTime(elapsedTime)
-                },
-                void 0,
-                false,
-                {
-                  fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                  lineNumber: 248,
-                  columnNumber: 11
-                },
-                void 0
-              ),
-              /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { display: "flex", gap: "15px" }, children: [
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "button",
-                  {
-                    onClick: handleStartStop,
-                    disabled: loading,
-                    style: {
-                      padding: "12px 30px",
-                      backgroundColor: isRunning ? "#dc3545" : "#28a745",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      transition: "transform 0.2s, background-color 0.2s"
-                    },
-                    children: isRunning ? "Stop" : "Start"
-                  },
-                  void 0,
-                  false,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                    lineNumber: 265,
-                    columnNumber: 13
-                  },
-                  void 0
-                ),
-                endTime && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "button",
-                  {
-                    onClick: handleFinish,
-                    disabled: loading,
-                    style: {
-                      padding: "12px 30px",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      transition: "transform 0.2s, background-color 0.2s"
-                    },
-                    children: loading ? "Saving..." : "Finish"
-                  },
-                  void 0,
-                  false,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                    lineNumber: 284,
-                    columnNumber: 15
-                  },
-                  void 0
-                )
-              ] }, void 0, true, {
-                fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                lineNumber: 264,
-                columnNumber: 11
-              }, void 0)
-            ]
-          },
-          void 0,
-          true,
-          {
-            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-            lineNumber: 240,
-            columnNumber: 9
-          },
-          void 0
-        ),
-        error && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-          "div",
-          {
-            style: {
-              marginTop: "20px",
-              padding: "12px",
-              backgroundColor: "#f8d7da",
-              color: "#721c24",
-              borderRadius: "8px",
-              textAlign: "center"
-            },
-            children: error
-          },
-          void 0,
-          false,
-          {
-            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-            lineNumber: 307,
-            columnNumber: 9
-          },
-          void 0
-        ),
-        startTime && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-          "div",
-          {
-            style: {
-              marginTop: "30px",
-              textAlign: "center",
-              color: "#6c757d",
-              fontSize: "14px"
-            },
-            children: [
-              /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("p", { children: [
-                "Started: ",
-                startTime.toLocaleTimeString()
-              ] }, void 0, true, {
-                fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                lineNumber: 330,
-                columnNumber: 11
-              }, void 0),
-              endTime && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("p", { children: [
-                "Ended: ",
-                endTime.toLocaleTimeString()
-              ] }, void 0, true, {
-                fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-                lineNumber: 331,
-                columnNumber: 23
-              }, void 0)
-            ]
-          },
-          void 0,
-          true,
-          {
-            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-            lineNumber: 322,
-            columnNumber: 9
+            lineNumber: 190,
+            columnNumber: 11
           },
           void 0
         )
-      ]
-    },
-    void 0,
-    true,
-    {
+      ] }, void 0, true, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+        lineNumber: 188,
+        columnNumber: 9
+      }, void 0),
+      selectedStation && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { children: [
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("label", { className: "timer-label", children: "Select Activity:" }, void 0, false, {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+          lineNumber: 206,
+          columnNumber: 13
+        }, void 0),
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+          "select",
+          {
+            value: selectedActivity || "",
+            onChange: (e) => setSelectedActivity(Number(e.target.value)),
+            className: "timer-select",
+            children: [
+              /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: "", children: "Select an activity" }, void 0, false, {
+                fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+                lineNumber: 212,
+                columnNumber: 15
+              }, void 0),
+              activities.map((activity) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("option", { value: activity.id, children: activity.name }, activity.id, false, {
+                fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+                lineNumber: 214,
+                columnNumber: 17
+              }, void 0))
+            ]
+          },
+          void 0,
+          true,
+          {
+            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+            lineNumber: 207,
+            columnNumber: 13
+          },
+          void 0
+        )
+      ] }, void 0, true, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+        lineNumber: 205,
+        columnNumber: 11
+      }, void 0)
+    ] }, void 0, true, {
       fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
-      lineNumber: 138,
-      columnNumber: 5
-    },
-    void 0
-  );
+      lineNumber: 187,
+      columnNumber: 7
+    }, void 0),
+    selectedActivity && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "timer-display", children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "timer-time", children: formatTime(elapsedTime) }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+        lineNumber: 225,
+        columnNumber: 11
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "timer-buttons", children: !isRunning ? /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+        "button",
+        {
+          onClick: handleStart,
+          className: "timer-button start-button",
+          disabled: loading,
+          children: "Start"
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+          lineNumber: 228,
+          columnNumber: 15
+        },
+        void 0
+      ) : /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(jsxDevRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+          "button",
+          {
+            onClick: handlePause,
+            className: "timer-button pause-button",
+            disabled: loading,
+            children: isPaused ? "Resume" : "Pause"
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+            lineNumber: 237,
+            columnNumber: 17
+          },
+          void 0
+        ),
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
+          "button",
+          {
+            onClick: handleFinish,
+            className: "timer-button finish-button",
+            disabled: loading,
+            children: loading ? "Saving..." : "Finish"
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+            lineNumber: 244,
+            columnNumber: 17
+          },
+          void 0
+        )
+      ] }, void 0, true, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+        lineNumber: 236,
+        columnNumber: 15
+      }, void 0) }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+        lineNumber: 226,
+        columnNumber: 11
+      }, void 0)
+    ] }, void 0, true, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+      lineNumber: 224,
+      columnNumber: 9
+    }, void 0),
+    error && /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "error-message", children: error }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+      lineNumber: 257,
+      columnNumber: 17
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "toast-container", children: toasts.map((toast) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: `toast ${toast.type}`, children: toast.message }, toast.id, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+      lineNumber: 261,
+      columnNumber: 11
+    }, void 0)) }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+      lineNumber: 259,
+      columnNumber: 7
+    }, void 0)
+  ] }, void 0, true, {
+    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/components/ActivityTimer.tsx",
+    lineNumber: 184,
+    columnNumber: 5
+  }, void 0);
 };
-function App() {
+const App = () => {
   const [isLogin, setIsLogin] = reactExports.useState(true);
   const [token, setToken] = reactExports.useState(null);
   reactExports.useEffect(() => {
@@ -32172,145 +32031,64 @@ function App() {
     setToken(null);
   };
   if (token) {
-    return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-      "div",
-      {
-        style: {
-          fontFamily: "Arial, sans-serif",
-          maxWidth: "800px",
-          margin: "0 auto",
-          padding: "20px"
-        },
-        children: [
-          /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-            "div",
-            {
-              style: {
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "20px"
-              },
-              children: [
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h1", { style: { margin: 0 }, children: "Time Keeper" }, void 0, false, {
-                  fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-                  lineNumber: 45,
-                  columnNumber: 11
-                }, this),
-                /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-                  "button",
-                  {
-                    onClick: handleLogout,
-                    style: {
-                      padding: "8px 16px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer"
-                    },
-                    children: "Logout"
-                  },
-                  void 0,
-                  false,
-                  {
-                    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-                    lineNumber: 46,
-                    columnNumber: 11
-                  },
-                  this
-                )
-              ]
-            },
-            void 0,
-            true,
-            {
-              fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-              lineNumber: 37,
-              columnNumber: 9
-            },
-            this
-          ),
-          /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(ActivityTimer, { token }, void 0, false, {
-            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-            lineNumber: 60,
-            columnNumber: 9
-          }, this)
-        ]
-      },
-      void 0,
-      true,
-      {
+    return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "app-container", children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "header", children: [
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h1", { children: "Time Keeper" }, void 0, false, {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+          lineNumber: 32,
+          columnNumber: 11
+        }, void 0),
+        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("button", { onClick: handleLogout, className: "logout-button", children: "Logout" }, void 0, false, {
+          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+          lineNumber: 33,
+          columnNumber: 11
+        }, void 0)
+      ] }, void 0, true, {
         fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-        lineNumber: 29,
-        columnNumber: 7
-      },
-      this
-    );
-  }
-  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-    "div",
-    {
-      style: {
-        fontFamily: "Arial, sans-serif",
-        maxWidth: "800px",
-        margin: "0 auto",
-        padding: "20px"
-      },
-      children: [
-        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h1", { style: { textAlign: "center", marginBottom: "20px" }, children: "Time Keeper" }, void 0, false, {
-          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-          lineNumber: 74,
-          columnNumber: 7
-        }, this),
-        isLogin ? /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(LoginForm, { onLogin: handleLogin }, void 0, false, {
-          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-          lineNumber: 75,
-          columnNumber: 18
-        }, this) : /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(RegisterForm, { onLogin: handleLogin }, void 0, false, {
-          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-          lineNumber: 75,
-          columnNumber: 56
-        }, this),
-        /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { style: { textAlign: "center", marginTop: "20px" }, children: /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(
-          "button",
-          {
-            onClick: () => setIsLogin(!isLogin),
-            style: {
-              padding: "8px 16px",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer"
-            },
-            children: isLogin ? "Need to register?" : "Already have an account?"
-          },
-          void 0,
-          false,
-          {
-            fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-            lineNumber: 77,
-            columnNumber: 9
-          },
-          this
-        ) }, void 0, false, {
-          fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-          lineNumber: 76,
-          columnNumber: 7
-        }, this)
-      ]
-    },
-    void 0,
-    true,
-    {
+        lineNumber: 31,
+        columnNumber: 9
+      }, void 0),
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(ActivityTimer, { token }, void 0, false, {
+        fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+        lineNumber: 37,
+        columnNumber: 9
+      }, void 0)
+    ] }, void 0, true, {
       fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
-      lineNumber: 66,
-      columnNumber: 5
-    },
-    this
-  );
-}
+      lineNumber: 30,
+      columnNumber: 7
+    }, void 0);
+  }
+  return /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "app-container", children: [
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("h1", { className: "title", children: "Time Keeper" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 44,
+      columnNumber: 7
+    }, void 0),
+    isLogin ? /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(LoginForm, { onLogin: handleLogin }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 45,
+      columnNumber: 18
+    }, void 0) : /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(RegisterForm, { onLogin: handleLogin }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 45,
+      columnNumber: 56
+    }, void 0),
+    /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "switch-form-container", children: /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("button", { onClick: () => setIsLogin(!isLogin), className: "switch-form-button", children: isLogin ? "Need to register?" : "Already have an account?" }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 47,
+      columnNumber: 9
+    }, void 0) }, void 0, false, {
+      fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+      lineNumber: 46,
+      columnNumber: 7
+    }, void 0)
+  ] }, void 0, true, {
+    fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/App.tsx",
+    lineNumber: 43,
+    columnNumber: 5
+  }, void 0);
+};
 client.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(React.StrictMode, { children: /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV(App, {}, void 0, false, {
     fileName: "C:/Users/rober/OneDrive/Documents/Projects/time-keeper-app/packages/electron-app/src/index.tsx",

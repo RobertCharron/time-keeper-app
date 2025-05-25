@@ -21,6 +21,12 @@ export class ActivityUse {
   @Column({ type: 'timestamp', nullable: true })
   timeEnd: Date;
 
+  @Column({ type: 'integer', default: 0 })
+  timePaused: number;
+
+  @Column({ type: 'integer', default: 0 })
+  totalDuration: number;
+
   @Column({ default: true })
   isActive: boolean;
 

@@ -29,6 +29,14 @@ __decorate([
     __metadata("design:type", Date)
 ], ActivityUse.prototype, "timeEnd", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'integer', default: 0 }),
+    __metadata("design:type", Number)
+], ActivityUse.prototype, "timePaused", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'integer', default: 0 }),
+    __metadata("design:type", Number)
+], ActivityUse.prototype, "totalDuration", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], ActivityUse.prototype, "isActive", void 0);

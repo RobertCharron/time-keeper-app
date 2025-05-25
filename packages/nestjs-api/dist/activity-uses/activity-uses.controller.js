@@ -36,8 +36,8 @@ let ActivityUsesController = class ActivityUsesController {
     findByActivity(activityId) {
         return this.activityUsesService.findByActivity(+activityId);
     }
-    endActivity(id) {
-        return this.activityUsesService.endActivity(+id);
+    endActivity(id, timePaused, totalDuration) {
+        return this.activityUsesService.endActivity(+id, timePaused, totalDuration);
     }
 };
 exports.ActivityUsesController = ActivityUsesController;
@@ -79,8 +79,10 @@ __decorate([
 __decorate([
     (0, common_1.Post)(':id/end'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('timePaused')),
+    __param(2, (0, common_1.Body)('totalDuration')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], ActivityUsesController.prototype, "endActivity", null);
 exports.ActivityUsesController = ActivityUsesController = __decorate([
