@@ -6,8 +6,9 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "concurrently \"pnpm dev:electron\" \"pnpm dev:api\"",
     "dev:electron": "pnpm --filter electron-app dev",
-    "dev:api": "pnpm --filter nestjs-api start:dev",
+    "dev:api": "pnpm --filter nestjs-api dev",
     "build:electron": "pnpm --filter electron-app build",
     "build:api": "pnpm --filter nestjs-api build",
     "start:electron": "pnpm --filter electron-app start",
