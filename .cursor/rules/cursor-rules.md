@@ -51,8 +51,10 @@
 
 ### Code Principles  
 
-- Follow SOLID principles: Ensure maintainable and scalable code.  
+- Follow SOLID principles: Ensure maintainable and scalable code.
+- All public functions should contain docblocks
 
 ### Testing  
 
 - Write comprehensive tests: Use NestJS utilities to ensure thorough test coverage with unit and integration tests.  
+
