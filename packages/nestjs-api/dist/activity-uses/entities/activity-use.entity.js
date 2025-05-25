@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Date)
 ], ActivityUse.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, user => user.activityUses),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.activityUses),
     (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
     __metadata("design:type", user_entity_1.User)
 ], ActivityUse.prototype, "user", void 0);
@@ -50,7 +50,7 @@ __decorate([
     __metadata("design:type", Number)
 ], ActivityUse.prototype, "userId", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => activity_entity_1.Activity, activity => activity.activityUses),
+    (0, typeorm_1.ManyToOne)(() => activity_entity_1.Activity, (activity) => activity.activityUses),
     (0, typeorm_1.JoinColumn)({ name: 'activity_id' }),
     __metadata("design:type", activity_entity_1.Activity)
 ], ActivityUse.prototype, "activity", void 0);

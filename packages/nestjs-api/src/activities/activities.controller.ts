@@ -27,4 +27,4 @@ export class ActivitiesController {
   findByStation(@Param('stationId') stationId: string) {
     return this.activitiesService.findByStation(+stationId);
   }
-} 
+}

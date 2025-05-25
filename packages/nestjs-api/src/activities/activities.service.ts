@@ -39,4 +39,4 @@ export class ActivitiesService {
       relations: ['station'],
     });
   }
-} 
+}

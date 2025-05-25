@@ -36,7 +36,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Station.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => activity_entity_1.Activity, activity => activity.station),
+    (0, typeorm_1.OneToMany)(() => activity_entity_1.Activity, (activity) => activity.station),
     __metadata("design:type", Array)
 ], Station.prototype, "activities", void 0);
 exports.Station = Station = __decorate([

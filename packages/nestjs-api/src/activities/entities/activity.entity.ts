@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { Station } from '../../stations/entities/station.entity';
 import { ActivityUse } from '../../activity-uses/entities/activity-use.entity';
 
@@ -19,13 +28,13 @@ export class Activity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Station, station => station.activities)
+  @ManyToOne(() => Station, (station) => station.activities)
   @JoinColumn({ name: 'station_id' })
   station: Station;
 
   @Column({ name: 'station_id' })
   stationId: number;
 
-  @OneToMany(() => ActivityUse, activityUse => activityUse.activity)
+  @OneToMany(() => ActivityUse, (activityUse) => activityUse.activity)
   activityUses: ActivityUse[];
-} 
+}

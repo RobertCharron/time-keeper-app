@@ -10,4 +10,4 @@ import { ActivityUse } from './entities/activity-use.entity';
   providers: [ActivityUsesService],
   exports: [ActivityUsesService],
 })
-export class ActivityUsesModule {} 
+export class ActivityUsesModule {}

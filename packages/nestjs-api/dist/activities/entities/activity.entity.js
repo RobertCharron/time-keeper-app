@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Activity.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => station_entity_1.Station, station => station.activities),
+    (0, typeorm_1.ManyToOne)(() => station_entity_1.Station, (station) => station.activities),
     (0, typeorm_1.JoinColumn)({ name: 'station_id' }),
     __metadata("design:type", station_entity_1.Station)
 ], Activity.prototype, "station", void 0);
@@ -46,7 +46,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Activity.prototype, "stationId", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => activity_use_entity_1.ActivityUse, activityUse => activityUse.activity),
+    (0, typeorm_1.OneToMany)(() => activity_use_entity_1.ActivityUse, (activityUse) => activityUse.activity),
     __metadata("design:type", Array)
 ], Activity.prototype, "activityUses", void 0);
 exports.Activity = Activity = __decorate([

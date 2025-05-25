@@ -21,4 +21,4 @@ export class SeedCommand {
       process.exit(1);
     }
   }
-} 
+}

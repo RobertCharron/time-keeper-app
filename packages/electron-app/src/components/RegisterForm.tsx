@@ -39,13 +39,21 @@ const RegisterForm: FC<RegisterFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        maxWidth: '400px',
+        margin: '0 auto',
+        padding: '20px',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      }}
+    >
       <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Register</h2>
-      
+
       <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-          Name:
-        </label>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Name:</label>
         <input
           type="text"
           value={name}
@@ -56,9 +64,7 @@ const RegisterForm: FC<RegisterFormProps> = ({ onLogin }) => {
       </div>
 
       <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-          Email:
-        </label>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Email:</label>
         <input
           type="email"
           value={email}
@@ -81,9 +87,7 @@ const RegisterForm: FC<RegisterFormProps> = ({ onLogin }) => {
         />
       </div>
 
-      {error && (
-        <p style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{error}</p>
-      )}
+      {error && <p style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{error}</p>}
 
       <button
         type="submit"
@@ -104,4 +108,4 @@ const RegisterForm: FC<RegisterFormProps> = ({ onLogin }) => {
   );
 };
 
-export default RegisterForm; 
+export default RegisterForm;

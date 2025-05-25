@@ -39,13 +39,13 @@ __decorate([
         type: login_dto_1.LoginDto,
         description: 'Login a user',
         examples: {
-            'Login': {
+            Login: {
                 value: {
                     email: 'test@test.com',
                     password: 'password',
-                }
-            }
-        }
+                },
+            },
+        },
     }),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
@@ -58,14 +58,14 @@ __decorate([
         type: register_dto_1.RegisterDto,
         description: 'Register a new user',
         examples: {
-            'Register': {
+            Register: {
                 value: {
                     email: 'test@test.com',
                     password: 'password',
-                    name: 'John Doe'
-                }
-            }
-        }
+                    name: 'John Doe',
+                },
+            },
+        },
     }),
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),

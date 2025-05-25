@@ -37,4 +37,4 @@ export class ActivityUsesController {
   endActivity(@Param('id') id: string) {
     return this.activityUsesService.endActivity(+id);
   }
-} 
+}

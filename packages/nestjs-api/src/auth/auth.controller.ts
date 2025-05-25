@@ -12,13 +12,13 @@ export class AuthController {
     type: LoginDto,
     description: 'Login a user',
     examples: {
-      'Login': {
+      Login: {
         value: {
           email: 'test@test.com',
           password: 'password',
-        }
-      }
-    }
+        },
+      },
+    },
   })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
@@ -33,17 +33,17 @@ export class AuthController {
     type: RegisterDto,
     description: 'Register a new user',
     examples: {
-      'Register': {
+      Register: {
         value: {
           email: 'test@test.com',
           password: 'password',
-          name: 'John Doe'
-        }
-      }
-    }
+          name: 'John Doe',
+        },
+      },
+    },
   })
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
-} 
+}

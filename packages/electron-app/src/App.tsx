@@ -26,8 +26,22 @@ function App() {
 
   if (token) {
     return (
-      <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div
+        style={{
+          fontFamily: 'Arial, sans-serif',
+          maxWidth: '800px',
+          margin: '0 auto',
+          padding: '20px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
           <h1 style={{ margin: 0 }}>Time Keeper</h1>
           <button
             onClick={handleLogout}
@@ -49,7 +63,14 @@ function App() {
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div
+      style={{
+        fontFamily: 'Arial, sans-serif',
+        maxWidth: '800px',
+        margin: '0 auto',
+        padding: '20px',
+      }}
+    >
       <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Time Keeper</h1>
       {isLogin ? <LoginForm onLogin={handleLogin} /> : <RegisterForm onLogin={handleLogin} />}
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -71,4 +92,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

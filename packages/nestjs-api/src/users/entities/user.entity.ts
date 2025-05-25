@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { ActivityUse } from 'src/activity-uses/entities/activity-use.entity';
+import { ActivityUse } from '../../activity-uses/entities/activity-use.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -47,7 +47,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => ActivityUse, activityUse => activityUse.user)
+  @OneToMany(() => ActivityUse, (activityUse) => activityUse.user)
   activityUses: ActivityUse[];
 
   @BeforeInsert()
@@ -55,6 +55,14 @@ export class User {
   async hashPassword() {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, 10);
+    }
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async normalizeEmail() {
+    if (this.email) {
+      this.email = this.email.toLowerCase();
     }
   }
 

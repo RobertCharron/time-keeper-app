@@ -5,6 +5,7 @@ const station_entity_1 = require("../stations/entities/station.entity");
 const activity_entity_1 = require("../activities/entities/activity.entity");
 const user_entity_1 = require("../users/entities/user.entity");
 const bcrypt = require("bcrypt");
+const activity_use_entity_1 = require("../activity-uses/entities/activity-use.entity");
 async function seed() {
     const dataSource = new typeorm_1.DataSource({
         type: 'postgres',
@@ -12,8 +13,8 @@ async function seed() {
         port: 5432,
         username: 'postgres',
         password: 'postgres',
-        database: 'time_keeper',
-        entities: [user_entity_1.User, station_entity_1.Station, activity_entity_1.Activity],
+        database: 'timekeeper',
+        entities: [user_entity_1.User, station_entity_1.Station, activity_entity_1.Activity, activity_use_entity_1.ActivityUse],
         synchronize: true,
     });
     try {

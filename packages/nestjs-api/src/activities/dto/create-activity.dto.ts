@@ -12,4 +12,4 @@ export class CreateActivityDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
-} 
+}

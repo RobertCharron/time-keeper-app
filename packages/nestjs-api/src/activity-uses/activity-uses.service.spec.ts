@@ -21,8 +21,8 @@ describe('ActivityUsesService', () => {
   };
 
   const mockRepository = {
-    create: jest.fn().mockImplementation(dto => dto),
-    save: jest.fn().mockImplementation(activityUse => Promise.resolve({ ...activityUse, id: 1 })),
+    create: jest.fn().mockImplementation((dto) => dto),
+    save: jest.fn().mockImplementation((activityUse) => Promise.resolve({ ...activityUse, id: 1 })),
     find: jest.fn().mockResolvedValue([mockActivityUse]),
     findOne: jest.fn().mockResolvedValue(mockActivityUse),
   };
@@ -136,4 +136,4 @@ describe('ActivityUsesService', () => {
       await expect(service.endActivity(999)).rejects.toThrow(NotFoundException);
     });
   });
-}); 
+});

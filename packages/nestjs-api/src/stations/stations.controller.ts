@@ -22,4 +22,4 @@ export class StationsController {
   findOne(@Param('id') id: string) {
     return this.stationsService.findOne(+id);
   }
-} 
+}

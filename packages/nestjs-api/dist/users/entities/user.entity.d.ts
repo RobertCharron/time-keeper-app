@@ -1,4 +1,4 @@
-import { ActivityUse } from 'src/activity-uses/entities/activity-use.entity';
+import { ActivityUse } from '../../activity-uses/entities/activity-use.entity';
 export declare enum UserRole {
     ADMIN = "admin",
     EDITOR = "editor",
@@ -15,5 +15,6 @@ export declare class User {
     updatedAt: Date;
     activityUses: ActivityUse[];
     hashPassword(): Promise<void>;
+    normalizeEmail(): Promise<void>;
     validatePassword(password: string): Promise<boolean>;
 }

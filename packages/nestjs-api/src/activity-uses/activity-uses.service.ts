@@ -55,4 +55,4 @@ export class ActivityUsesService {
     activityUse.timeEnd = new Date();
     return this.activityUsesRepository.save(activityUse);
   }
-} 
+}

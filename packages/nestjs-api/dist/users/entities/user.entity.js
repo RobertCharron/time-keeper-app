@@ -25,6 +25,11 @@ let User = class User {
             this.password = await bcrypt.hash(this.password, 10);
         }
     }
+    async normalizeEmail() {
+        if (this.email) {
+            this.email = this.email.toLowerCase();
+        }
+    }
     async validatePassword(password) {
         return bcrypt.compare(password, this.password);
     }
@@ -67,7 +72,7 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => activity_use_entity_1.ActivityUse, activityUse => activityUse.user),
+    (0, typeorm_1.OneToMany)(() => activity_use_entity_1.ActivityUse, (activityUse) => activityUse.user),
     __metadata("design:type", Array)
 ], User.prototype, "activityUses", void 0);
 __decorate([
@@ -77,6 +82,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], User.prototype, "hashPassword", null);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    (0, typeorm_1.BeforeUpdate)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], User.prototype, "normalizeEmail", null);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

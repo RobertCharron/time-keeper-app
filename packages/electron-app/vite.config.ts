@@ -14,10 +14,10 @@ export default defineConfig({
           build: {
             outDir: 'dist/main',
             rollupOptions: {
-              external: ['electron']
-            }
-          }
-        }
+              external: ['electron'],
+            },
+          },
+        },
       },
       {
         // Renderer process
@@ -28,12 +28,12 @@ export default defineConfig({
             rollupOptions: {
               input: {
                 index: 'index.html',
-              }
-            }
-          }
-        }
-      }
-    ])
+              },
+            },
+          },
+        },
+      },
+    ]),
   ],
   resolve: {
     alias: {
@@ -44,4 +44,4 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
   },
-}); 
+});

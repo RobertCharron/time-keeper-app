@@ -3,6 +3,7 @@ import { Station } from '../stations/entities/station.entity';
 import { Activity } from '../activities/entities/activity.entity';
 import { User } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { ActivityUse } from '../activity-uses/entities/activity-use.entity';
 
 async function seed() {
   const dataSource = new DataSource({
@@ -11,8 +12,8 @@ async function seed() {
     port: 5432,
     username: 'postgres',
     password: 'postgres',
-    database: 'time_keeper',
-    entities: [User, Station, Activity],
+    database: 'timekeeper',
+    entities: [User, Station, Activity, ActivityUse],
     synchronize: true,
   });
 
@@ -98,4 +99,4 @@ async function seed() {
 }
 
 // Run the seeder
-seed().catch(console.error); 
+seed().catch(console.error);

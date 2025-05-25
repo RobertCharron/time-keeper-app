@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Activity } from '../../activities/entities/activity.entity';
 import { User } from '../../users/entities/user.entity';
 
@@ -22,17 +30,17 @@ export class ActivityUse {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, user => user.activityUses)
+  @ManyToOne(() => User, (user) => user.activityUses)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({ name: 'user_id' })
   userId: number;
 
-  @ManyToOne(() => Activity, activity => activity.activityUses)
+  @ManyToOne(() => Activity, (activity) => activity.activityUses)
   @JoinColumn({ name: 'activity_id' })
   activity: Activity;
 
   @Column({ name: 'activity_id' })
   activityId: number;
-} 
+}

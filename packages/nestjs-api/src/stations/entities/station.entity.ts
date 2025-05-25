@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Activity } from '../../activities/entities/activity.entity';
 
 @Entity()
@@ -18,6 +25,6 @@ export class Station {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Activity, activity => activity.station)
+  @OneToMany(() => Activity, (activity) => activity.station)
   activities: Activity[];
-} 
+}

@@ -37,9 +37,24 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: '#fff' }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        maxWidth: '400px',
+        margin: '0 auto',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#fff',
+      }}
+    >
       <div style={{ marginBottom: '15px' }}>
-        <label htmlFor="email" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Email:</label>
+        <label
+          htmlFor="email"
+          style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}
+        >
+          Email:
+        </label>
         <input
           id="email"
           type="email"
@@ -50,7 +65,12 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
         />
       </div>
       <div style={{ marginBottom: '15px' }}>
-        <label htmlFor="password" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Password:</label>
+        <label
+          htmlFor="password"
+          style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}
+        >
+          Password:
+        </label>
         <input
           id="password"
           type="password"
@@ -60,7 +80,19 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
           style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         />
       </div>
-      <button type="submit" disabled={loading} style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          width: '100%',
+          padding: '10px',
+          backgroundColor: '#007bff',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      >
         {loading ? 'Logging in...' : 'Login'}
       </button>
       {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
@@ -68,4 +100,4 @@ const LoginForm: FC<LoginFormProps> = ({ onLogin }) => {
   );
 };
 
-export default LoginForm; 
+export default LoginForm;

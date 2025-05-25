@@ -12,13 +12,11 @@ describe('StationsService', () => {
         id: 1,
         name: 'Test Station',
         isActive: true,
-        activities: [
-            { id: 1, name: 'Test Activity' }
-        ],
+        activities: [{ id: 1, name: 'Test Activity' }],
     };
     const mockRepository = {
-        create: jest.fn().mockImplementation(dto => dto),
-        save: jest.fn().mockImplementation(station => Promise.resolve({ ...station, id: 1 })),
+        create: jest.fn().mockImplementation((dto) => dto),
+        save: jest.fn().mockImplementation((station) => Promise.resolve({ ...station, id: 1 })),
         find: jest.fn().mockResolvedValue([mockStation]),
         findOne: jest.fn().mockResolvedValue(mockStation),
     };

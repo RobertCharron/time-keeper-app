@@ -19,6 +19,7 @@ time-keeper-app/
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 pnpm install
 ```
@@ -26,11 +27,13 @@ pnpm install
 2. Start development servers:
 
 For the Electron app:
+
 ```bash
 pnpm dev:electron
 ```
 
 For the NestJS API:
+
 ```bash
 pnpm dev:api
 ```
@@ -42,4 +45,4 @@ pnpm dev:api
 - `pnpm build:electron` - Build Electron app
 - `pnpm build:api` - Build NestJS API
 - `pnpm start:electron` - Start Electron app in production mode
-- `pnpm start:api` - Start NestJS API in production mode 
+- `pnpm start:api` - Start NestJS API in production mode

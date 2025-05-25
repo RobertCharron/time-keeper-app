@@ -18,8 +18,8 @@ describe('ActivitiesService', () => {
   };
 
   const mockRepository = {
-    create: jest.fn().mockImplementation(dto => dto),
-    save: jest.fn().mockImplementation(activity => Promise.resolve({ ...activity, id: 1 })),
+    create: jest.fn().mockImplementation((dto) => dto),
+    save: jest.fn().mockImplementation((activity) => Promise.resolve({ ...activity, id: 1 })),
     find: jest.fn().mockResolvedValue([mockActivity]),
     findOne: jest.fn().mockResolvedValue(mockActivity),
   };
@@ -98,4 +98,4 @@ describe('ActivitiesService', () => {
       expect(result).toEqual([mockActivity]);
     });
   });
-}); 
+});

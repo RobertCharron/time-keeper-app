@@ -36,4 +36,4 @@ export class AuthService {
     const user = await this.usersService.create(registerDto);
     return this.login(user);
   }
-} 
+}
