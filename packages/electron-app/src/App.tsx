@@ -7,6 +7,10 @@ import './App.css';
 const App: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return (savedTheme as 'light' | 'dark') || 'light';
+  });
 
   useEffect(() => {
     const storedToken = localStorage.getItem('access_token');
@@ -14,6 +18,11 @@ const App: React.FC = () => {
       setToken(storedToken);
     }
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const handleLogin = (newToken: string) => {
     localStorage.setItem('access_token', newToken);
@@ -25,14 +34,23 @@ const App: React.FC = () => {
     setToken(null);
   };
 
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
   if (token) {
     return (
       <div className="app-container">
         <div className="header">
           <h1>Time Keeper</h1>
-          <button onClick={handleLogout} className="logout-button">
-            Logout
-          </button>
+          <div>
+            <button onClick={toggleTheme} className="theme-toggle">
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+          </div>
         </div>
         <ActivityTimer token={token} />
       </div>
@@ -41,7 +59,12 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
-      <h1 className="title">Time Keeper</h1>
+      <div className="header">
+        <h1 className="title">Time Keeper</h1>
+        <button onClick={toggleTheme} className="theme-toggle">
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
+      </div>
       {isLogin ? <LoginForm onLogin={handleLogin} /> : <RegisterForm onLogin={handleLogin} />}
       <div className="switch-form-container">
         <button onClick={() => setIsLogin(!isLogin)} className="switch-form-button">

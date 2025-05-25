@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import './RegisterForm.css';
 
 interface RegisterFormProps {
   onLogin: (token: string) => void;
@@ -39,69 +40,42 @@ const RegisterForm: FC<RegisterFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        maxWidth: '400px',
-        margin: '0 auto',
-        padding: '20px',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Register</h2>
+    <form onSubmit={handleSubmit} className="register-form">
+      <h2 style={{ textAlign: 'center', marginBottom: '20px', color: 'var(--text-primary)' }}>Register</h2>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Name:</label>
+      <div className="form-group">
+        <label>Name:</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         />
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Email:</label>
+      <div className="form-group">
+        <label>Email:</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         />
       </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-          Password:
-        </label>
+      <div className="form-group">
+        <label>Password:</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
         />
       </div>
 
-      {error && <p style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
-      <button
-        type="submit"
-        disabled={loading}
-        style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}
-      >
+      <button type="submit" disabled={loading} className="register-button">
         {loading ? 'Registering...' : 'Register'}
       </button>
     </form>

@@ -2,16 +2,16 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 30px;
-  background-color: #ffffff;
+  background-color: var(--bg-secondary);
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
   position: relative;
 }
 
 .timer-title {
   margin-bottom: 30px;
   text-align: center;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 28px;
   font-weight: 600;
 }
@@ -27,22 +27,23 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .timer-select {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 2px solid #e0e0e0;
-  background-color: #f8f9fa;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-size: 16px;
   transition: border-color 0.2s;
   cursor: pointer;
 }
 
 .timer-select:hover {
-  border-color: #007bff;
+  border-color: var(--button-primary);
 }
 
 .timer-display {
@@ -55,7 +56,7 @@
 .timer-time {
   font-size: 48px;
   font-weight: bold;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-family: monospace;
 }
 
@@ -75,7 +76,7 @@
 }
 
 .start-button {
-  background-color: #28a745;
+  background-color: var(--button-success);
   color: white;
 }
 
@@ -84,7 +85,7 @@
 }
 
 .pause-button {
-  background-color: #ffc107;
+  background-color: var(--button-warning);
   color: #000;
 }
 
@@ -93,7 +94,7 @@
 }
 
 .stop-button {
-  background-color: #dc3545;
+  background-color: var(--button-danger);
   color: white;
 }
 
@@ -102,7 +103,7 @@
 }
 
 .finish-button {
-  background-color: #007bff;
+  background-color: var(--button-primary);
   color: white;
 }
 
@@ -111,12 +112,12 @@
 }
 
 .timer-button:disabled {
-  background-color: #6c757d;
+  background-color: var(--text-secondary);
   cursor: not-allowed;
 }
 
 .error-message {
-  color: #dc3545;
+  color: var(--button-danger);
   text-align: center;
   margin-top: 20px;
 }
@@ -137,15 +138,15 @@
   color: white;
   font-weight: 500;
   animation: slideIn 0.3s ease-out;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 .toast.success {
-  background-color: #28a745;
+  background-color: var(--button-success);
 }
 
 .toast.error {
-  background-color: #dc3545;
+  background-color: var(--button-danger);
 }
 
 @keyframes slideIn {
